@@ -1,0 +1,58 @@
+# MindFlow Open Source License
+
+Copyright (c) 2025 hszhsz
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+---
+
+## Commercial Use License
+
+This program is free for personal, educational, and open source projects
+under the terms of GPL v3.
+
+Commercial use requires a separate commercial license. Commercial licenses
+are available for:
+
+- **Cloud-hosted services**: Running MindFlow as a hosted/service solution
+- **Enterprise embedding**: Integrating MindFlow into proprietary products
+- **SaaS products**: Offering MindFlow functionality as part of a paid service
+
+To obtain a commercial license, contact: [your email]
+
+---
+
+## Additional Terms
+
+### 1. Attribution
+When using this software, you must retain all copyright and license notices.
+
+### 2. Distribution
+If you distribute this software (modified or unmodified), you must:
+- Make the complete source code available under GPL v3
+- Include this license document
+- Clearly state any modifications made
+
+### 3. Trademark
+"MindFlow" is a registered trademark. Commercial use of the MindFlow
+name and branding requires explicit permission.
+
+### 4. Contribution
+Contributions to this project are subject to the same license terms.
+
+---
+
+## Contact
+
+For commercial licensing questions: [hszhsz@yourdomain.com]
