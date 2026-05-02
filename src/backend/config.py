@@ -42,7 +42,7 @@ class Settings(BaseSettings):
 
     # Model configuration
     model_name: str = "claude-sonnet-4-20250514"
-    max_tokens: int = 512
+    max_tokens: int = 262144
 
     # Server configuration
     server_host: str = "127.0.0.1"
@@ -55,6 +55,10 @@ class Settings(BaseSettings):
     def load(cls) -> "Settings":
         """Load settings with fallback for legacy env vars."""
         import os
+
+        # Explicitly load .env file so env vars are available before Settings init
+        from dotenv import load_dotenv
+        load_dotenv(".env", override=True)
 
         settings = cls()
 
