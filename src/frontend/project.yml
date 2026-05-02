@@ -2,17 +2,17 @@ name: MindFlow
 options:
   bundleIdPrefix: com.mindflow
   deploymentTarget:
-    macOS: "13.0"
+    macOS: "12.0"
   xcodeVersion: "15.0"
   generateEmptyDirectories: true
 
 settings:
   base:
     PRODUCT_NAME: MindFlow
-    MARKETING_VERSION: "0.1.0"
+    MARKETING_VERSION: "0.2.0"
     CURRENT_PROJECT_VERSION: "1"
     SWIFT_VERSION: "5.9"
-    MACOSX_DEPLOYMENT_TARGET: "13.0"
+    MACOSX_DEPLOYMENT_TARGET: "12.0"
     CODE_SIGN_IDENTITY: "-"
     CODE_SIGN_STYLE: Manual
     ENABLE_HARDENED_RUNTIME: YES
@@ -22,8 +22,13 @@ targets:
     type: application
     platform: macOS
     sources:
-      - path: .
-        type: group
+      - path: main.swift
+      - path: AppDelegate.swift
+      - path: HotkeyManager.swift
+      - path: InputPanel.swift
+      - path: CandidateWindow.swift
+      - path: StatusMenuController.swift
+      - path: APIClient.swift
     settings:
       base:
         INFOPLIST_FILE: MindFlow/Info.plist
