@@ -36,6 +36,10 @@ class MockLLMClient:
     def model(self) -> str:
         return self._model
 
+    @property
+    def provider(self) -> str:
+        return "mock"
+
     async def generate(self, text: str, intent: Intent, context: dict) -> dict:
         self.call_count += 1
         self.last_text = text

@@ -43,7 +43,9 @@ Press **Tab** to accept and paste into your current app. That's it.
 - **macOS 12.0+** (Monterey or later)
 - **Python 3.11+**
 - **Xcode 15+** (for building the frontend)
-- **Anthropic API key** ([get one here](https://console.anthropic.com/))
+- An LLM API key — **one** of the following:
+  - **Anthropic API key** ([get one here](https://console.anthropic.com/)) — default provider
+  - **OpenAI API key** ([get one here](https://platform.openai.com/api-keys))
 
 ---
 
@@ -66,13 +68,30 @@ source .venv/bin/activate
 # Install dependencies
 pip install -r src/backend/requirements.txt
 
-# Create a .env file for your API key
+# Create a .env file — choose ONE provider:
+
+# Option A: Anthropic (default)
 cat > .env << 'EOF'
+MINDFLOW_LLM_PROVIDER=anthropic
 ANTHROPIC_API_KEY=sk-ant-your-key-here
+EOF
+
+# Option B: OpenAI
+cat > .env << 'EOF'
+MINDFLOW_LLM_PROVIDER=openai
+OPENAI_API_KEY=sk-your-openai-key-here
+EOF
+
+# Option C: OpenAI-compatible endpoint (Azure, local vLLM, Ollama, etc.)
+cat > .env << 'EOF'
+MINDFLOW_LLM_PROVIDER=openai
+OPENAI_API_KEY=your-key-here
+OPENAI_BASE_URL=http://localhost:11434/v1
+MINDFLOW_MODEL_NAME=llama3
 EOF
 ```
 
-> **Note**: The backend reads `ANTHROPIC_API_KEY` from environment variables or from a `.env` file in the project root. You can also use the prefixed form `MINDFLOW_ANTHROPIC_API_KEY`.
+> **Note**: The backend reads API keys from environment variables or from a `.env` file in the project root. You can use either the standard names (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`) or the prefixed form (`MINDFLOW_ANTHROPIC_API_KEY`, `MINDFLOW_OPENAI_API_KEY`).
 
 ### Step 3: Start the backend
 
@@ -136,16 +155,39 @@ On first launch, macOS will prompt you to grant Accessibility permission:
 
 All backend settings can be configured via environment variables or `.env` file:
 
+### Provider Selection
+
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `ANTHROPIC_API_KEY` | — | Your Anthropic API key (required) |
-| `MINDFLOW_MODEL_NAME` | `claude-sonnet-4-20250514` | Claude model to use |
+| `MINDFLOW_LLM_PROVIDER` | `anthropic` | LLM backend: `anthropic` or `openai` |
+
+### Anthropic Settings
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `ANTHROPIC_API_KEY` | — | Your Anthropic API key (required when provider=anthropic) |
+| `MINDFLOW_MODEL_NAME` | `claude-sonnet-4-20250514` | Model identifier |
+
+### OpenAI Settings
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `OPENAI_API_KEY` | — | Your OpenAI API key (required when provider=openai) |
+| `OPENAI_BASE_URL` | — | Custom endpoint URL (for Azure, vLLM, Ollama, etc.) |
+| `MINDFLOW_MODEL_NAME` | `gpt-4o` | Model identifier |
+
+### General Settings
+
+| Variable | Default | Description |
+|----------|---------|-------------|
 | `MINDFLOW_MAX_TOKENS` | `512` | Max tokens per generation |
 | `MINDFLOW_SERVER_HOST` | `127.0.0.1` | Backend bind address |
 | `MINDFLOW_SERVER_PORT` | `8765` | Backend port |
 | `MINDFLOW_CONTEXT_HISTORY_SIZE` | `20` | Conversation turns to remember |
 
-Frontend settings (API key, backend URL) can also be configured via the menu bar icon > **Settings**.
+> **Tip**: All `MINDFLOW_`-prefixed variables override their non-prefixed equivalents. For example, `MINDFLOW_OPENAI_API_KEY` takes precedence over `OPENAI_API_KEY`.
+
+Frontend settings (backend URL) can also be configured via the menu bar icon > **Settings**.
 
 ---
 
@@ -255,11 +297,14 @@ python -m uvicorn src.backend.main:app --host 127.0.0.1 --port 8765 --log-level 
 ### "LLM not available" error
 
 ```bash
-# Verify your API key is set
-echo $ANTHROPIC_API_KEY
+# Verify your API key is set (depends on which provider you chose)
+echo $ANTHROPIC_API_KEY    # for Anthropic
+echo $OPENAI_API_KEY       # for OpenAI
 
 # Or check .env file exists in project root
 cat .env
+
+# Make sure MINDFLOW_LLM_PROVIDER matches the API key you've set
 ```
 
 ### Hotkeys not working
@@ -298,7 +343,7 @@ cat .env
 │               Python Backend (FastAPI)                    │
 │  ┌──────────┐  ┌──────────────┐  ┌───────────────────┐  │
 │  │  Router  │  │Intent Classif│  │   LLM Client      │  │
-│  │ (main.py)│  │(;;mail/总结) │  │   (AsyncAnthropic)│  │
+│  │ (main.py)│  │(;;mail/总结) │  │(Anthropic/OpenAI) │  │
 │  └──────────┘  └──────────────┘  └───────────────────┘  │
 │  ┌──────────┐  ┌──────────────┐  ┌───────────────────┐  │
 │  │  Config  │  │Context Manager│  │  SSE Streaming    │  │
@@ -311,6 +356,7 @@ cat .env
 
 ## Roadmap
 
+- [x] Multi-provider LLM support (Anthropic Claude + OpenAI GPT + any OpenAI-compatible API)
 - [ ] Personal style fine-tuning (learn your writing patterns)
 - [ ] Cross-session memory with vector storage
 - [ ] Local LLM support via Apple MLX / llama.cpp
