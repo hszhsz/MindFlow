@@ -6,3 +6,12 @@ __pycache__/
 dist/
 build/
 .pytest_cache/
+
+# macOS
+.DS_Store
+
+# Xcode
+xcuserdata/
+
+# Claude Code (local settings)
+.claude/settings.local.json
