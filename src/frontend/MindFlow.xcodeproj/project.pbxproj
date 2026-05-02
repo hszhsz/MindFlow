@@ -1,0 +1,336 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		136804BF4498A0DAFA3B6E1E /* HotkeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF02D741221D0FD62CA8AB06 /* HotkeyManager.swift */; };
+		7E0ADCB83F698CD89FE6186C /* project.yml in Resources */ = {isa = PBXBuildFile; fileRef = D9EE388B90499EBD04543844 /* project.yml */; };
+		B7FC94D8CF3DB822C37DAED8 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27C8BA88DEDD7792948722EB /* main.swift */; };
+		CFB068708C9BAC9BC65EA519 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20AE99EA54A1D27E2B1CCF9E /* APIClient.swift */; };
+		D724C4A26763934107B505B0 /* CandidateWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0101E656DB25D4FE5A94CD82 /* CandidateWindow.swift */; };
+		D82FD445C3E22A948853F072 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3BB58B956E6D182FDDBE200 /* AppDelegate.swift */; };
+		DD0A25B94A07264D509E7482 /* StatusMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1F99A6745E3162DEE14E94 /* StatusMenuController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0101E656DB25D4FE5A94CD82 /* CandidateWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateWindow.swift; sourceTree = "<group>"; };
+		20AE99EA54A1D27E2B1CCF9E /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		27C8BA88DEDD7792948722EB /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		2D1F99A6745E3162DEE14E94 /* StatusMenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusMenuController.swift; sourceTree = "<group>"; };
+		558B15D4D7BE32322B28BBE7 /* MindFlow.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MindFlow.entitlements; sourceTree = "<group>"; };
+		8B48839C5B4801C29E42A95E /* MindFlow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MindFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9FB9DA693DCC8CFFC1880CCD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		A3BB58B956E6D182FDDBE200 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		AF02D741221D0FD62CA8AB06 /* HotkeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyManager.swift; sourceTree = "<group>"; };
+		D9EE388B90499EBD04543844 /* project.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = project.yml; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		2F50FD2F35E9D9BBA344E213 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8B48839C5B4801C29E42A95E /* MindFlow.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		65BB5F9C5FCACB39FB3819FA /* MindFlow */ = {
+			isa = PBXGroup;
+			children = (
+				9FB9DA693DCC8CFFC1880CCD /* Info.plist */,
+				558B15D4D7BE32322B28BBE7 /* MindFlow.entitlements */,
+			);
+			path = MindFlow;
+			sourceTree = "<group>";
+		};
+		9D1FFD879130478F6B7D5956 = {
+			isa = PBXGroup;
+			children = (
+				DFADF5A3C5AAAFC88B8F190A /* frontend */,
+				65BB5F9C5FCACB39FB3819FA /* MindFlow */,
+				2F50FD2F35E9D9BBA344E213 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		DFADF5A3C5AAAFC88B8F190A /* frontend */ = {
+			isa = PBXGroup;
+			children = (
+				20AE99EA54A1D27E2B1CCF9E /* APIClient.swift */,
+				A3BB58B956E6D182FDDBE200 /* AppDelegate.swift */,
+				0101E656DB25D4FE5A94CD82 /* CandidateWindow.swift */,
+				AF02D741221D0FD62CA8AB06 /* HotkeyManager.swift */,
+				27C8BA88DEDD7792948722EB /* main.swift */,
+				D9EE388B90499EBD04543844 /* project.yml */,
+				2D1F99A6745E3162DEE14E94 /* StatusMenuController.swift */,
+				65BB5F9C5FCACB39FB3819FA /* MindFlow */,
+			);
+			name = frontend;
+			path = .;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3B0C9A8CD3F79E801FFE6615 /* MindFlow */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9DC53671451D36B52103C4A1 /* Build configuration list for PBXNativeTarget "MindFlow" */;
+			buildPhases = (
+				76C258D79C94CC4C8B658824 /* Sources */,
+				782725EA5195FF6F4483B908 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MindFlow;
+			packageProductDependencies = (
+			);
+			productName = MindFlow;
+			productReference = 8B48839C5B4801C29E42A95E /* MindFlow.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7A269784B7C45981208596D6 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					3B0C9A8CD3F79E801FFE6615 = {
+						ProvisioningStyle = Manual;
+					};
+				};
+			};
+			buildConfigurationList = FB122D2788A44B70992256C6 /* Build configuration list for PBXProject "MindFlow" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 9D1FFD879130478F6B7D5956;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 2F50FD2F35E9D9BBA344E213 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3B0C9A8CD3F79E801FFE6615 /* MindFlow */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		782725EA5195FF6F4483B908 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7E0ADCB83F698CD89FE6186C /* project.yml in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		76C258D79C94CC4C8B658824 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CFB068708C9BAC9BC65EA519 /* APIClient.swift in Sources */,
+				D82FD445C3E22A948853F072 /* AppDelegate.swift in Sources */,
+				D724C4A26763934107B505B0 /* CandidateWindow.swift in Sources */,
+				136804BF4498A0DAFA3B6E1E /* HotkeyManager.swift in Sources */,
+				DD0A25B94A07264D509E7482 /* StatusMenuController.swift in Sources */,
+				B7FC94D8CF3DB822C37DAED8 /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		02C2371DE3DEC03AD31D6216 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MindFlow/MindFlow.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = MindFlow/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.mindflow.app;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		42A87F8B0D7A1676464C5BF3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MindFlow/MindFlow.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = MindFlow/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.mindflow.app;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		44EBF5A3E58DD0B541F30ADA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = MindFlow;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		50E20FA04F086E400192040F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = MindFlow;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9DC53671451D36B52103C4A1 /* Build configuration list for PBXNativeTarget "MindFlow" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				02C2371DE3DEC03AD31D6216 /* Debug */,
+				42A87F8B0D7A1676464C5BF3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		FB122D2788A44B70992256C6 /* Build configuration list for PBXProject "MindFlow" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				44EBF5A3E58DD0B541F30ADA /* Debug */,
+				50E20FA04F086E400192040F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 7A269784B7C45981208596D6 /* Project object */;
+}
