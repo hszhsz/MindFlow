@@ -29,6 +29,7 @@ targets:
       - path: CandidateWindow.swift
       - path: StatusMenuController.swift
       - path: APIClient.swift
+      - path: InputPanel.swift
     settings:
       base:
         INFOPLIST_FILE: MindFlow/Info.plist
