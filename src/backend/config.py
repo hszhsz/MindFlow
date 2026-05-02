@@ -1,8 +1,8 @@
 """Configuration management for MindFlow backend.
 
 Uses pydantic-settings to load configuration from environment variables
-and an optional .env file. All settings can be overridden via env vars
-prefixed with MINDFLOW_ (except ANTHROPIC_API_KEY which is read directly).
+and an optional .env file. All settings can be overridden via env vars.
+Supports both Anthropic (Claude) and OpenAI-compatible (Moonshot) providers.
 """
 
 from typing import Optional
@@ -14,8 +14,10 @@ class Settings(BaseSettings):
     """Application settings loaded from environment and .env file.
 
     Attributes:
-        anthropic_api_key: API key for Anthropic Claude. Required for LLM features.
-        model_name: Claude model identifier to use for generation.
+        llm_provider: LLM provider - "anthropic" or "openai".
+        llm_api_key: API key for the LLM provider.
+        llm_base_url: Base URL for OpenAI-compatible APIs (ignored for Anthropic).
+        model_name: Model identifier (e.g. claude-sonnet-4-20250514 or kimi-k2.6).
         server_host: Host address the server binds to.
         server_port: Port number the server listens on.
         max_tokens: Maximum tokens for a single LLM generation call.
@@ -29,8 +31,14 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    # Anthropic API key - read without prefix for convenience
-    anthropic_api_key: Optional[str] = None
+    # Provider: "anthropic" or "openai"
+    llm_provider: str = "anthropic"
+
+    # API key - no prefix for convenience (works with LLM_API_KEY, ANTHROPIC_API_KEY, etc.)
+    llm_api_key: Optional[str] = None
+
+    # Base URL for OpenAI-compatible APIs
+    llm_base_url: Optional[str] = None
 
     # Model configuration
     model_name: str = "claude-sonnet-4-20250514"
@@ -45,17 +53,20 @@ class Settings(BaseSettings):
 
     @classmethod
     def load(cls) -> "Settings":
-        """Load settings, also checking ANTHROPIC_API_KEY directly.
-
-        This allows users to set either MINDFLOW_ANTHROPIC_API_KEY or
-        the standard ANTHROPIC_API_KEY environment variable.
-        """
+        """Load settings with fallback for legacy env vars."""
         import os
 
         settings = cls()
-        # Fall back to the standard env var if the prefixed one is not set
-        if not settings.anthropic_api_key:
-            settings.anthropic_api_key = os.environ.get("ANTHROPIC_API_KEY")
+
+        # Fall back to legacy ANTHROPIC_API_KEY if no LLM_API_KEY is set
+        if not settings.llm_api_key:
+            settings.llm_api_key = os.environ.get("ANTHROPIC_API_KEY")
+
+        # Fall back to MINDFLOW_LLM_MODEL env var for model_name
+        env_model = os.environ.get("MINDFLOW_LLM_MODEL")
+        if env_model:
+            settings.model_name = env_model
+
         return settings
 
 

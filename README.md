@@ -73,25 +73,28 @@ pip install -r src/backend/requirements.txt
 # Option A: Anthropic (default)
 cat > .env << 'EOF'
 MINDFLOW_LLM_PROVIDER=anthropic
-ANTHROPIC_API_KEY=sk-ant-your-key-here
+MINDFLOW_LLM_API_KEY=sk-ant-your-key-here
+MINDFLOW_LLM_MODEL=claude-sonnet-4-20250514
 EOF
 
-# Option B: OpenAI
+# Option B: Moonshot AI (kimi)
 cat > .env << 'EOF'
 MINDFLOW_LLM_PROVIDER=openai
-OPENAI_API_KEY=sk-your-openai-key-here
+MINDFLOW_LLM_API_KEY=sk-your-moonshot-key-here
+MINDFLOW_LLM_BASE_URL=https://api.moonshot.cn/v1
+MINDFLOW_LLM_MODEL=kimi-k2.6
 EOF
 
 # Option C: OpenAI-compatible endpoint (Azure, local vLLM, Ollama, etc.)
 cat > .env << 'EOF'
 MINDFLOW_LLM_PROVIDER=openai
-OPENAI_API_KEY=your-key-here
-OPENAI_BASE_URL=http://localhost:11434/v1
-MINDFLOW_MODEL_NAME=llama3
+MINDFLOW_LLM_API_KEY=your-key-here
+MINDFLOW_LLM_BASE_URL=http://localhost:11434/v1
+MINDFLOW_LLM_MODEL=llama3
 EOF
 ```
 
-> **Note**: The backend reads API keys from environment variables or from a `.env` file in the project root. You can use either the standard names (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`) or the prefixed form (`MINDFLOW_ANTHROPIC_API_KEY`, `MINDFLOW_OPENAI_API_KEY`).
+> **Note**: The backend reads API keys from environment variables or from a `.env` file in the project root. For backward compatibility, `ANTHROPIC_API_KEY` is also accepted when `MINDFLOW_LLM_API_KEY` is not set.
 
 ### Step 3: Start the backend
 
@@ -161,20 +164,13 @@ All backend settings can be configured via environment variables or `.env` file:
 |----------|---------|-------------|
 | `MINDFLOW_LLM_PROVIDER` | `anthropic` | LLM backend: `anthropic` or `openai` |
 
-### Anthropic Settings
+### LLM Settings
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `ANTHROPIC_API_KEY` | — | Your Anthropic API key (required when provider=anthropic) |
-| `MINDFLOW_MODEL_NAME` | `claude-sonnet-4-20250514` | Model identifier |
-
-### OpenAI Settings
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `OPENAI_API_KEY` | — | Your OpenAI API key (required when provider=openai) |
-| `OPENAI_BASE_URL` | — | Custom endpoint URL (for Azure, vLLM, Ollama, etc.) |
-| `MINDFLOW_MODEL_NAME` | `gpt-4o` | Model identifier |
+| `MINDFLOW_LLM_API_KEY` | — | Your LLM API key (required) |
+| `MINDFLOW_LLM_MODEL` | provider-specific | Model identifier (e.g. `claude-sonnet-4-20250514` or `kimi-k2.6`) |
+| `MINDFLOW_LLM_BASE_URL` | — | Base URL for OpenAI-compatible APIs (required for Moonshot, Azure, vLLM, Ollama, etc.) |
 
 ### General Settings
 
@@ -185,7 +181,7 @@ All backend settings can be configured via environment variables or `.env` file:
 | `MINDFLOW_SERVER_PORT` | `8765` | Backend port |
 | `MINDFLOW_CONTEXT_HISTORY_SIZE` | `20` | Conversation turns to remember |
 
-> **Tip**: All `MINDFLOW_`-prefixed variables override their non-prefixed equivalents. For example, `MINDFLOW_OPENAI_API_KEY` takes precedence over `OPENAI_API_KEY`.
+> **Tip**: For backward compatibility, `ANTHROPIC_API_KEY` is also accepted when `MINDFLOW_LLM_API_KEY` is not set.
 
 Frontend settings (backend URL) can also be configured via the menu bar icon > **Settings**.
 

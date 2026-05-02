@@ -62,19 +62,19 @@ async def lifespan(app: FastAPI):
 
     context_manager = ContextManager()
 
-    if settings.anthropic_api_key:
+    if settings.llm_api_key:
         try:
             llm_client = LLMClient(
-                api_key=settings.anthropic_api_key,
+                api_key=settings.llm_api_key,
                 context_manager=context_manager,
             )
-            logger.info("LLM client ready (model=%s)", settings.model_name)
+            logger.info("LLM client ready (provider=%s, model=%s)", settings.llm_provider, settings.model_name)
         except LLMAuthenticationError as exc:
             logger.warning("LLM client unavailable: %s", exc)
     else:
         logger.warning(
-            "ANTHROPIC_API_KEY not set. LLM generation will be unavailable. "
-            "Set ANTHROPIC_API_KEY or MINDFLOW_ANTHROPIC_API_KEY to enable."
+            "LLM_API_KEY not set. LLM generation will be unavailable. "
+            "Set LLM_API_KEY (or ANTHROPIC_API_KEY) to enable."
         )
 
     yield

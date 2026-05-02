@@ -1,16 +1,13 @@
 """LLM client for MindFlow.
 
-Handles all communication with the Claude API via the async Anthropic SDK.
+Handles communication with LLM providers via Anthropic or OpenAI SDK.
 Provides both single-shot generation and streaming generation methods.
-Context from the ContextManager is injected into the system prompt so the
-model is aware of the user's current environment and recent conversation.
+Context from the ContextManager is injected into the system prompt.
 """
 
 import logging
+from abc import ABC, abstractmethod
 from typing import AsyncIterator, Optional
-
-import anthropic
-from anthropic import AsyncAnthropic
 
 from .config import settings
 from .context_manager import ContextManager
@@ -143,15 +140,169 @@ _PROMPT_BUILDERS = {
 
 
 # ---------------------------------------------------------------------------
-# LLM Client
+# Abstract base class for LLM providers
+# ---------------------------------------------------------------------------
+
+class BaseLLMProvider(ABC):
+    """Abstract base class for LLM providers."""
+
+    def __init__(self, api_key: str, model: str, max_tokens: int):
+        self._api_key = api_key
+        self._model = model
+        self._max_tokens = max_tokens
+
+    @property
+    def model(self) -> str:
+        return self._model
+
+    @abstractmethod
+    async def generate(self, system_prompt: str, user_prompt: str) -> str:
+        """Generate a single text completion (non-streaming)."""
+        pass
+
+    @abstractmethod
+    async def generate_stream(self, system_prompt: str, user_prompt: str) -> AsyncIterator[str]:
+        """Stream text completion chunks."""
+        pass
+
+    @abstractmethod
+    async def close(self) -> None:
+        """Close the client."""
+        pass
+
+
+# ---------------------------------------------------------------------------
+# Anthropic provider
+# ---------------------------------------------------------------------------
+
+class AnthropicProvider(BaseLLMProvider):
+    """Anthropic Claude provider using the Anthropic SDK."""
+
+    def __init__(self, api_key: str, model: str, max_tokens: int):
+        super().__init__(api_key, model, max_tokens)
+        import anthropic
+        self._client = anthropic.AsyncAnthropic(api_key=api_key)
+        logger.info("Anthropic provider initialized (model=%s)", model)
+
+    async def generate(self, system_prompt: str, user_prompt: str) -> str:
+        import anthropic
+        try:
+            response = await self._client.messages.create(
+                model=self._model,
+                max_tokens=self._max_tokens,
+                system=system_prompt,
+                messages=[{"role": "user", "content": user_prompt}],
+            )
+            return response.content[0].text.strip()
+        except anthropic.AuthenticationError as exc:
+            raise LLMAuthenticationError("Invalid Anthropic API key") from exc
+        except anthropic.RateLimitError as exc:
+            raise LLMRateLimitError("Rate limit exceeded") from exc
+        except Exception as exc:
+            raise LLMGenerationError(str(exc)) from exc
+
+    async def generate_stream(self, system_prompt: str, user_prompt: str) -> AsyncIterator[str]:
+        import anthropic
+        try:
+            async with self._client.messages.stream(
+                model=self._model,
+                max_tokens=self._max_tokens,
+                system=system_prompt,
+                messages=[{"role": "user", "content": user_prompt}],
+            ) as stream:
+                async for text_chunk in stream.text_stream:
+                    yield text_chunk
+        except anthropic.AuthenticationError as exc:
+            raise LLMAuthenticationError("Invalid Anthropic API key") from exc
+        except anthropic.RateLimitError as exc:
+            raise LLMRateLimitError("Rate limit exceeded") from exc
+        except Exception as exc:
+            raise LLMGenerationError(str(exc)) from exc
+
+    async def close(self) -> None:
+        await self._client.close()
+
+
+# ---------------------------------------------------------------------------
+# OpenAI-compatible provider (used for Moonshot, etc.)
+# ---------------------------------------------------------------------------
+
+class OpenAIProvider(BaseLLMProvider):
+    """OpenAI-compatible provider using the OpenAI SDK."""
+
+    def __init__(self, api_key: str, model: str, max_tokens: int, base_url: Optional[str] = None):
+        super().__init__(api_key, model, max_tokens)
+        from openai import AsyncOpenAI
+        self._base_url = base_url
+        self._client = AsyncOpenAI(api_key=api_key, base_url=base_url)
+        logger.info("OpenAI-compatible provider initialized (model=%s, base_url=%s)", model, base_url)
+
+    async def generate(self, system_prompt: str, user_prompt: str) -> str:
+        from openai import AuthenticationError, RateLimitError
+        try:
+            response = await self._client.chat.completions.create(
+                model=self._model,
+                max_tokens=self._max_tokens,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt},
+                ],
+            )
+            return response.choices[0].message.content.strip()
+        except AuthenticationError as exc:
+            raise LLMAuthenticationError(f"Invalid API key: {exc}") from exc
+        except RateLimitError as exc:
+            raise LLMRateLimitError("Rate limit exceeded") from exc
+        except Exception as exc:
+            raise LLMGenerationError(str(exc)) from exc
+
+    async def generate_stream(self, system_prompt: str, user_prompt: str) -> AsyncIterator[str]:
+        from openai import AuthenticationError, RateLimitError
+        try:
+            response = await self._client.chat.completions.create(
+                model=self._model,
+                max_tokens=self._max_tokens,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt},
+                ],
+                stream=True,
+            )
+            async for chunk in response:
+                if chunk.choices and chunk.choices[0].delta.content:
+                    yield chunk.choices[0].delta.content
+        except AuthenticationError as exc:
+            raise LLMAuthenticationError(f"Invalid API key: {exc}") from exc
+        except RateLimitError as exc:
+            raise LLMRateLimitError("Rate limit exceeded") from exc
+        except Exception as exc:
+            raise LLMGenerationError(str(exc)) from exc
+
+    async def close(self) -> None:
+        await self._client.close()
+
+
+# ---------------------------------------------------------------------------
+# Provider factory
+# ---------------------------------------------------------------------------
+
+def _create_provider(api_key: str, provider: str, model: str, max_tokens: int, base_url: Optional[str]) -> BaseLLMProvider:
+    """Create an LLM provider instance based on configuration."""
+    if provider == "openai":
+        return OpenAIProvider(api_key, model, max_tokens, base_url)
+    return AnthropicProvider(api_key, model, max_tokens)
+
+
+# ---------------------------------------------------------------------------
+# LLM Client (unified interface)
 # ---------------------------------------------------------------------------
 
 class LLMClient:
-    """Async client for LLM inference via the Anthropic Claude API.
+    """Async client for LLM inference supporting multiple providers.
 
     Args:
-        api_key: Anthropic API key.  Falls back to ``settings.anthropic_api_key``.
-        context_manager: Optional ContextManager instance for prompt enrichment.
+        api_key: API key for the LLM provider.
+        context_manager: Optional ContextManager for prompt enrichment.
     """
 
     def __init__(
@@ -159,26 +310,31 @@ class LLMClient:
         api_key: Optional[str] = None,
         context_manager: Optional[ContextManager] = None,
     ) -> None:
-        self._api_key = api_key or settings.anthropic_api_key
-        if not self._api_key:
+        resolved_key = api_key or settings.llm_api_key
+        if not resolved_key:
             raise LLMAuthenticationError(
-                "Anthropic API key is not set. "
-                "Provide ANTHROPIC_API_KEY or MINDFLOW_ANTHROPIC_API_KEY."
+                "API key is not set. Provide LLM_API_KEY or ANTHROPIC_API_KEY."
             )
-        self._client = AsyncAnthropic(api_key=self._api_key)
-        self._model = settings.model_name
-        self._max_tokens = settings.max_tokens
+
+        self._provider = _create_provider(
+            api_key=resolved_key,
+            provider=settings.llm_provider,
+            model=settings.model_name,
+            max_tokens=settings.max_tokens,
+            base_url=settings.llm_base_url,
+        )
         self._context_manager = context_manager
-        logger.info("LLMClient initialized (model=%s, max_tokens=%d)", self._model, self._max_tokens)
+        self._max_tokens = settings.max_tokens
+        self._model = settings.model_name
+        logger.info(
+            "LLMClient initialized (provider=%s, model=%s, max_tokens=%d)",
+            settings.llm_provider, self._model, self._max_tokens
+        )
 
     @property
     def model(self) -> str:
         """The model identifier in use."""
         return self._model
-
-    # ------------------------------------------------------------------
-    # Internal helpers
-    # ------------------------------------------------------------------
 
     async def _get_system_prompt(self) -> str:
         """Build the system prompt, optionally enriched with context."""
@@ -187,8 +343,7 @@ class LLMClient:
             context_block = await self._context_manager.build_context_prompt()
         return _build_system_prompt(context_block)
 
-    @staticmethod
-    def _build_user_prompt(text: str, intent: Intent, context: dict) -> str:
+    def _build_user_prompt(self, text: str, intent: Intent, context: dict) -> str:
         """Select the right prompt builder and produce the user message."""
         builder = _PROMPT_BUILDERS.get(intent, _build_continue_prompt)
         return builder(text, context)
@@ -203,21 +358,6 @@ class LLMClient:
             return 0.0
         return min(0.95, 0.7 + len(candidate) / 1000)
 
-    async def _handle_api_error(self, exc: Exception) -> None:
-        """Translate Anthropic SDK exceptions into MindFlow exceptions."""
-        if isinstance(exc, anthropic.AuthenticationError):
-            logger.error("Anthropic authentication failed")
-            raise LLMAuthenticationError("Invalid Anthropic API key") from exc
-        if isinstance(exc, anthropic.RateLimitError):
-            logger.warning("Anthropic rate limit hit")
-            raise LLMRateLimitError("Rate limit exceeded; please retry later") from exc
-        logger.exception("Anthropic API error")
-        raise LLMGenerationError(str(exc)) from exc
-
-    # ------------------------------------------------------------------
-    # Public API
-    # ------------------------------------------------------------------
-
     async def generate(
         self,
         text: str,
@@ -229,7 +369,7 @@ class LLMClient:
         Args:
             text: The cleaned user input (trigger prefix already removed).
             intent: The classified intent.
-            context: Session context dict (from ContextManager.get_context).
+            context: Session context dict.
 
         Returns:
             A dict with keys ``candidate`` (str), ``confidence`` (float),
@@ -247,18 +387,14 @@ class LLMClient:
         user_prompt = self._build_user_prompt(text, intent, context)
 
         try:
-            response = await self._client.messages.create(
-                model=self._model,
-                max_tokens=self._max_tokens,
-                system=system_prompt,
-                messages=[{"role": "user", "content": user_prompt}],
-            )
-        except Exception as exc:
-            await self._handle_api_error(exc)
-            # _handle_api_error always raises; this line is unreachable
-            raise  # pragma: no cover
+            candidate = await self._provider.generate(system_prompt, user_prompt)
+        except LLMAuthenticationError:
+            raise
+        except LLMRateLimitError:
+            raise
+        except LLMGenerationError:
+            raise
 
-        candidate = response.content[0].text.strip()
         confidence = self._estimate_confidence(candidate)
         logger.debug("Generated %d chars (confidence=%.2f)", len(candidate), confidence)
 
@@ -277,7 +413,6 @@ class LLMClient:
         """Stream text completion chunks as they arrive.
 
         This is an async generator that yields text delta strings.
-        Callers can iterate with ``async for chunk in client.generate_stream(...)``.
 
         Args:
             text: The cleaned user input.
@@ -300,14 +435,11 @@ class LLMClient:
         user_prompt = self._build_user_prompt(text, intent, context)
 
         try:
-            async with self._client.messages.stream(
-                model=self._model,
-                max_tokens=self._max_tokens,
-                system=system_prompt,
-                messages=[{"role": "user", "content": user_prompt}],
-            ) as stream:
-                async for text_chunk in stream.text_stream:
-                    yield text_chunk
-        except Exception as exc:
-            await self._handle_api_error(exc)
-            raise  # pragma: no cover
+            async for chunk in self._provider.generate_stream(system_prompt, user_prompt):
+                yield chunk
+        except LLMAuthenticationError:
+            raise
+        except LLMRateLimitError:
+            raise
+        except LLMGenerationError:
+            raise
